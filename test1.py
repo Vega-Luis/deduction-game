@@ -30,10 +30,12 @@ def crearRestric(c, r):
     cont=[]
     while(r>0):
         copia=c.copy()
+        rango=5
         for i in range(2):
-            indice=randrange(5)
+            indice=randrange(rango)
             cont.append(copia[indice][randrange(len(copia[indice]))])
             copia.pop(indice)
+            rango-=1
         salida.append(cont)
         cont=[]
         r-=1
