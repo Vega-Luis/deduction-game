@@ -1,5 +1,6 @@
 from random import randrange
 
+#realiza 100 ejecuciones del algoritmo con parametros aleatorios
 def prueba():
     exe=100
     salida=''
@@ -9,8 +10,10 @@ def prueba():
         if(salida=='fracaso'):
             print('fracaso')
             break
-        else:
+        elif(salida=='exito'):
             print('exito')
+        else:
+            print('no hay solucion')
         exe-=1
 
 def busquedaE(rest):
@@ -29,8 +32,6 @@ def busquedaE(rest):
     #contiene las parejas de restricciones
     res=crearRestric(categ, rest)
     #sugerencia del algoritmo
-    #sol=['El/la novio(a)','Pistola','Venganza','Cabeza','Sala']
-    #res=[['Vengana','Pistola']]
     sug=[]
     #contiene las posiciones de un elemento que es restriccion
     resActivas=[]
@@ -43,93 +44,152 @@ def busquedaE(rest):
     e=0
     contra=comprobarSol(res,sol)
     resActivas=[]
-    while(True):#len(categ[0])>0 and len(categ[1])>0 and len(categ[2])>0 and len(categ[3])>0 and len(categ[4])>0):
+    while(True):
         sug=[]
         eliminado=0
-##        print('\n')
-##        print(categ)
-##        print(a,b,c,d,e)
+        resActivas=[]
+        while(len(categ[0])>a):
+            if(comprobarRes(categ[0][a],resActivas,res)==False):               
+                break
+            else:
+                if(len(categ[0])-1>a):
+                    a+=1
         if(len(categ[0])==a):
             sug.append(categ[0][a-1])
         else:
             sug.append(categ[0][a])
+        while(len(categ[1])>b):
+            if(comprobarRes(categ[1][b],resActivas,res)==False):                
+                break
+            else:
+                if(len(categ[1])>b+1):
+                    b+=1
         if(len(categ[1])==b):
             sug.append(categ[1][b-1])
         else:
             sug.append(categ[1][b])
+        while(len(categ[2])>c):
+            if(comprobarRes(categ[2][c],resActivas,res)==False):                
+                break
+            else:
+                if(len(categ[2])>c+1):
+                    c+=1
         if(len(categ[2])==c):
             sug.append(categ[2][c-1])
         else:
             sug.append(categ[2][c])
+        while(len(categ[0])>d):
+            if(comprobarRes(categ[3][d],resActivas,res)==False):
+                break
+            else:
+                if(len(categ[3])>d+1):
+                    d+=1
         if(len(categ[3])==d):
             sug.append(categ[3][d-1])
         else:
             sug.append(categ[3][d])
+        while(len(categ[4])>e and len(categ[4])!=e):
+            if(comprobarRes(categ[4][e],resActivas,res)==False):
+                break
+            else:
+                if(len(categ[4])-1>e):
+                    e+=1
         if(len(categ[4])==e):
             sug.append(categ[4][e-1])
         else:
             sug.append(categ[4][e])
         #print('Sugerencia: ', sug)
         if(sug==sol):
-            return 'exito'
-        elif(e<len(categ[4]) and e!=len(categ[4])):
-            eliminado=eliminar(categ,sug,sol)
-            e+=1
-        elif(d<len(categ[3]) and d!=len(categ[3])):
-            eliminado=eliminar(categ,sug,sol)
-            e=0
-            d+=1
-        elif(c<len(categ[2]) and c!=len(categ[2])):
-            eliminado=eliminar(categ,sug,sol)
-            e=0
-            d=0
-            c+=1
-        elif(b<len(categ[1]) and c!=len(categ[1])):
-            eliminado=eliminar(categ,sug,sol)
-            e=0
-            d=0
-            c=0
-            b+=1
-        elif(a<len(categ[0]) and a!=len(categ[0])):
-            eliminado=eliminar(categ,sug,sol)
-            e=0
-            d=0
-            c=0
-            b=0
-            a+=1
+            if(contra==True):
+                return 'No hay solución'
+            else:
+                return 'exito'
         else:
-            return 'fracaso'
-        if(eliminado==0):
-            if(a>0):
-                a-=1
-        elif(eliminado==1):
-            if(b>0):
-                b-=1
-        elif(eliminado==2):
-            if(c>0):
-                c-=1
-        elif(eliminado==3):
-            if(d>0):
-                d-=1
-        else:
-            if(e>0):
-                e-=1
-        
-       
+            eliminado=eliminar(categ,sug,sol)
+            if(eliminado==0):
+                if(a>0):
+                    a-=1
+                sug[eliminado]=categ[0][a]
+            elif(eliminado==1):
+                if(b>0):
+                    b-=1
+                sug[eliminado]=categ[1][b]
+            elif(eliminado==2):
+                if(c>0):
+                    c-=1
+                sug[eliminado]=categ[2][c]
+            elif(eliminado==3):
+                if(d>0):
+                    d-=1
+                sug[eliminado]=categ[3][d]
+            else:
+                if(e>0):
+                    e-=1
+                sug[eliminado]=categ[4][e]
+            #print('sugerencia: ',sug)
+            if(sug==sol):
+                if(contra==True):
+                    return 'No hay solución'
+                else:
+                    return 'exito'
+            elif(e<len(categ[4])-1):
+                e+=1
+            elif(d<len(categ[3])-1):
+                e=0
+                d+=1
+            elif(c<len(categ[2])-1):
+                e=0
+                d=0
+                c+=1
+            elif(b<len(categ[1])-1):
+                e=0
+                d=0
+                c=0
+                b+=1
+            elif(a<len(categ[0])-1):
+                e=0
+                d=0
+                c=0
+                b=0
+                a+=1
+            elif(len(categ[0])>1):
+                e=0
+            elif(len(categ[1])>1):
+                d=0
+            elif(len(categ[2])>1):
+                c=0
+            elif(len(categ[3])>1):
+                b=0
+            elif(len(categ[4])>1):
+                a=0
+            else:
+                return 'fracaso'
+            
+
+
+def comprobarSol(res, sol):
+    result1=False
+    result2=True
+    for i in range(len(res)):
+        for j in range(len(res[i])):
+            if res[i][j] in sol:
+                result1=True
+            else:
+                result2=False
+        if result1==True and result2==True:
+            return True
+    return False        
 
 def comprobarRes(elemento, resActivas, res):
-    for i in range(len(resActivas)):
-        if elemento in res[resActivas[i]]:
-            resActivas.pop(i)
-            return True   
+    for i in range(len(res)):
+        if elemento in res[i]:
+            if i in resActivas:
+                resActivas.remove(i)
+                return True
+            else:
+                resActivas.append(i)
     return False
 
-
-def agregarRes(elemento, restricciones):
-    for i in range(len(restricciones)):
-        if elemento in restricciones[i]:
-            return i
-    return 6
 
 def eliminar(categ, sug, sol):
     eliminar=0
@@ -139,7 +199,6 @@ def eliminar(categ, sug, sol):
             break
     elemento=sug[eliminar]
     #print('Eliminado: ',elemento)
-    #print(categ)
     if eliminar==0:
         categ[0].remove(elemento)
     if eliminar==1:
