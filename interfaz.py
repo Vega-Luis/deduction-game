@@ -129,7 +129,7 @@ class Interfaz:
         
         #llamada al algoritmo exhaustivo
         t_ini=time.perf_counter()
-        self.busquedaE(restrictedPairs, solution)
+        self.busquedaE(solution)
         t_fin=time.perf_counter()-t_ini
         self.var5.set("%0.10f segundos." % t_fin)
 
@@ -164,7 +164,7 @@ class Interfaz:
 
             #llamada del exhaustivo
             t_ini=time.perf_counter()
-            self.busquedaE(restrictedPairs,solution)
+            self.busquedaE(solution)
             t_fin=time.perf_counter()-t_ini
             exhaus.append(t_fin)
 
@@ -195,7 +195,7 @@ class Interfaz:
 
 
 ############################################################################ EXHAUSTIVO ############################################################################
-    def busquedaE(self, rest, solucion):
+    def busquedaE(self, solucion):
         sospechoso=["El/la mejor amigo(a)","El/la novio(a)","El/la vecino(a)",
              "El mensajero","El extraño","El/la hermanastro(a)","El/la colega de trabajo"]
         arma=["Pistola","Cuchillo","Machete","Pala","Bate","Botella","Tubo","Cuerda"]
@@ -208,8 +208,6 @@ class Interfaz:
         categ=[sospechoso,arma,motivo,pdc,lugar]
         #contiene las cartas de la solución generada
         sol=solucion
-        #contiene las parejas de restricciones
-        res=rest
         #sugerencia del algoritmo
         sug=[]
         #contiene las posiciones de un elemento que es restriccion
@@ -217,174 +215,86 @@ class Interfaz:
         #4+5
         if(mostrar==True):
             self.salida+="Solucion: "+str(sol)+"\n"#4
-            self.salida+="Restricciones: "+str(res)+"\n"#4
-            #1+4+4
-        #4+5+9
+            #1+4
+        #4+5+5
         a=0
         b=0
         c=0
         d=0
         e=0
-        #4+5+9+5
-        #verifica si las restricciones no contradicen a la solucion, en otras palabras
-        #comprueba que existe solucion
-        contra=self.comprobarSol(res,sol)#2+(n+1)*((n+1)+3)
-        #en este arreglo se almacenan las categorias que pertenecen a alguna pareja
-        #de restricciones
-        resActivas=[]
-        #4+5+9+5+2+(n+1)*((n+1)+3)+2
         while(True):
-            #arreglo que contiene la sugerencia
             sug=[]
-            #contiene la posicion del elemento eliminado en el arreglo sugerencia
             eliminado=0
-            resActivas=[]
-            #se comprueba que el elemento no sea una restriccion
-            #n*(3)
-            while(len(categ[0])>a):
-                #n*(3+2+n)
-                if(self.comprobarRes(categ[0][a],resActivas,res)==False):#3+n*(4)               
-                    break
-                else:
-                    #valida que: de ser una restriccion no sea el ultimo elemento de la categoría
-                    if(len(categ[0])-1>a):
-                        a+=1
-                #3+n*(4)+5
-            #(n*(3+2+n*(3+4n+5))*5
-            #4+5+9+5+2+(n+1)*((n+1)+3)+2+n*(3+2+n*(3+4n+5))
             if(len(categ[0])==a):
                 sug.append(categ[0][a-1])
             else:
                 sug.append(categ[0][a])
-            #4+5+9+5+2+(n+1)*((n+1)+3)+2+(n*(3+2+n*(3+4n+5)+3))
-            while(len(categ[1])>b):
-                if(self.comprobarRes(categ[1][b],resActivas,res)==False):                
-                    break
-                else:
-                    if(len(categ[1])>b+1):
-                        b+=1
             if(len(categ[1])==b):
                 sug.append(categ[1][b-1])
             else:
                 sug.append(categ[1][b])
-            while(len(categ[2])>c):
-                if(self.comprobarRes(categ[2][c],resActivas,res)==False):                
-                    break
-                else:
-                    if(len(categ[2])>c+1):
-                        c+=1
             if(len(categ[2])==c):
                 sug.append(categ[2][c-1])
             else:
                 sug.append(categ[2][c])
-            while(len(categ[0])>d):
-                if(self.comprobarRes(categ[3][d],resActivas,res)==False):
-                    break
-                else:
-                    if(len(categ[3])>d+1):
-                        d+=1
             if(len(categ[3])==d):
                 sug.append(categ[3][d-1])
             else:
                 sug.append(categ[3][d])
-            while(len(categ[4])>e and len(categ[4])!=e):
-                if(self.comprobarRes(categ[4][e],resActivas,res)==False):
-                    break
-                else:
-                    if(len(categ[4])-1>e):
-                        e+=1
             if(len(categ[4])==e):
                 sug.append(categ[4][e-1])
             else:
                 sug.append(categ[4][e])
-            #4+5+9+5+2+(n+1)*((n+1)+3)+2+(5*(n*(3+2+n*(3+4n+5)+3)))
-            #27+(n+1)(n+4)+(5*(n*(3+2+n*(8+4n)+3)))
-            #27+n^2+5n+4+(5*(n*(8+8n+4n^2)))
-            #31+n^2+5n+(5*(8n+8n^2+4n^3))
-            #31+n^2+5n+40n+40n^2+20n^3
-            #20n^3+41n^2+45n+31
             if(mostrar==True):
                 self.salida+="Sugerencia: "+str(sug)+"\n"
-            #20n^3+41n^2+45n+37
             if(sug==sol):
-                #1
-                if(contra==True):
-                    if(mostrar==True):
-                        self.salida+="No hay solucion"+"\n"
-                    return "No hay solucion"
-                else:
-                    if(mostrar==True):
-                        self.salida+="Resultado: "+str(sug)+"\n"
-                    return "exito"
+                if(mostrar==True):
+                    self.salida+="Resultado: "+str(sug)+"\n"
+                return 'exito'
+            elif(e<len(categ[4]) and e!=len(categ[4])):
+                eliminado=self.eliminar(categ,sug,sol)
+                e+=1
+            elif(d<len(categ[3]) and d!=len(categ[3])):
+                eliminado=self.eliminar(categ,sug,sol)
+                e=0
+                d+=1
+            elif(c<len(categ[2]) and c!=len(categ[2])):
+                eliminado=self.eliminar(categ,sug,sol)
+                e=0
+                d=0
+                c+=1
+            elif(b<len(categ[1]) and c!=len(categ[1])):
+                eliminado=self.eliminar(categ,sug,sol)
+                e=0
+                d=0
+                c=0
+                b+=1
+            elif(a<len(categ[0]) and a!=len(categ[0])):
+                eliminado=self.eliminar(categ,sug,sol)
+                e=0
+                d=0
+                c=0
+                b=0
+                a+=1
             else:
-                eliminado=self.eliminar(categ,sug,sol,mostrar)#15+3n
-                if(eliminado==0):
-                    if(a>0):
-                        a-=1
-                    sug[eliminado]=categ[0][a]
-                elif(eliminado==1):
-                    if(b>0):
-                        b-=1
-                    sug[eliminado]=categ[1][b]
-                elif(eliminado==2):
-                    if(c>0):
-                        c-=1
-                    sug[eliminado]=categ[2][c]
-                elif(eliminado==3):
-                    if(d>0):
-                        d-=1
-                    sug[eliminado]=categ[3][d]
-                else:
-                    if(e>0):
-                        e-=1
-                    sug[eliminado]=categ[4][e]
-                #16+3n+8
-                if(sug==sol):
-                    if(contra==True):
-                        if(mostrar==True):
-                            self.salida+="No hay solucion"+"\n"
-                        return "No hay solucion"
-                    else:
-                        if(mostrar==True):
-                            self.salida+="Resultado: "+str(sug)+"\n"
-                        return "Exito"
-                #16+3n+8+9
-                elif(e<len(categ[4])-1):
-                    e+=1
-                elif(d<len(categ[3])-1):
-                    e=0
-                    d+=1
-                elif(c<len(categ[2])-1):
-                    e=0
-                    d=0
-                    c+=1
-                elif(b<len(categ[1])-1):
-                    e=0
-                    d=0
-                    c=0
-                    b+=1
-                elif(a<len(categ[0])-1):
-                    e=0
-                    d=0
-                    c=0
-                    b=0
-                    a+=1
-                elif(len(categ[0])>1):
-                    e=0
-                elif(len(categ[1])>1):
-                    d=0
-                elif(len(categ[2])>1):
-                    c=0
-                elif(len(categ[3])>1):
-                    b=0
-                elif(len(categ[4])>1):
-                    a=0
-                else:
-                    return 'fracaso'
-                #16+3n+8+9+25=3n+58
-                #20n^3+41n^2+45n+37+3n+58
-                #resultado=20n^3+41n^2+48n+95
-
+                if(mostrar==True):
+                    self.salida+="Fracaso"+"\n"
+                return 'fracaso'
+            if(eliminado==0):
+                if(a>0):
+                    a-=1
+            elif(eliminado==1):
+                if(b>0):
+                    b-=1
+            elif(eliminado==2):
+                if(c>0):
+                    c-=1
+            elif(eliminado==3):
+                if(d>0):
+                    d-=1
+            else:
+                if(e>0):
+                    e-=1
 
     def comprobarSol(self, res, sol):
         for i in range(len(res)):
@@ -404,20 +314,7 @@ class Interfaz:
         return False
         #2+(n+1)*((n+1)+3)+1
 
-    def comprobarRes(self, elemento, resActivas, res):
-        for i in range(len(res)):
-            #1+n
-            if elemento in res[i]:
-                if i in resActivas:
-                    resActivas.remove(i)
-                    return True
-                else:
-                    resActivas.append(i)
-             #1+n*(4)   
-        return False
-        #1+n*(4)+1
-
-    def eliminar(self, categ, sug, sol, mostrar):
+    def eliminar(self, categ, sug, sol):
         eliminar=0
         while(True):
             #1+n*(2+1)
