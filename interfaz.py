@@ -156,7 +156,10 @@ class Interfaz:
         back=[]
         while(ejecuciones!=0):
             restringedCards=[]
-            restrictedPairs=self.crearRestric(categ,int(entrada))
+            if(entrada=="n" or entrada=="N"):
+                restrictedPairs=self.crearRestric(categ,randrange(100))
+            else:
+                restrictedPairs=self.crearRestric(categ,int(entrada))
             solution=self.crearSol(categ)
 
             #llamada del exhaustivo
@@ -200,6 +203,7 @@ class Interfaz:
         pdc=["Cabeza","Pecho","Abdomen","Espalda","Piernas","Brazos"]
         lugar=["Sala","Comedor","Baño","Terraza","Cuarto","Garage","Patio","Balcón",
                "Cocina"]
+        #4
         
         categ=[sospechoso,arma,motivo,pdc,lugar]
         #contiene las cartas de la solución generada
@@ -210,22 +214,25 @@ class Interfaz:
         sug=[]
         #contiene las posiciones de un elemento que es restriccion
         resActivas=[]
-##      print('Solución: ',sol)
-##      print('Restricciones: ',res)
+        #4+5
         if(mostrar==True):
-            self.salida+="Solucion: "+str(sol)+"\n"
-            self.salida+="Restricciones: "+str(res)+"\n"
+            self.salida+="Solucion: "+str(sol)+"\n"#4
+            self.salida+="Restricciones: "+str(res)+"\n"#4
+            #1+4+4
+        #4+5+9
         a=0
         b=0
         c=0
         d=0
         e=0
+        #4+5+9+5
         #verifica si las restricciones no contradicen a la solucion, en otras palabras
         #comprueba que existe solucion
-        contra=self.comprobarSol(res,sol)
+        contra=self.comprobarSol(res,sol)#2+(n+1)*((n+1)+3)
         #en este arreglo se almacenan las categorias que pertenecen a alguna pareja
         #de restricciones
         resActivas=[]
+        #4+5+9+5+2+(n+1)*((n+1)+3)+2
         while(True):
             #arreglo que contiene la sugerencia
             sug=[]
@@ -233,17 +240,23 @@ class Interfaz:
             eliminado=0
             resActivas=[]
             #se comprueba que el elemento no sea una restriccion
+            #n*(3)
             while(len(categ[0])>a):
-                if(self.comprobarRes(categ[0][a],resActivas,res)==False):               
+                #n*(3+2+n)
+                if(self.comprobarRes(categ[0][a],resActivas,res)==False):#3+n*(4)               
                     break
                 else:
                     #valida que: de ser una restriccion no sea el ultimo elemento de la categoría
                     if(len(categ[0])-1>a):
                         a+=1
+                #3+n*(4)+5
+            #(n*(3+2+n*(3+4n+5))*5
+            #4+5+9+5+2+(n+1)*((n+1)+3)+2+n*(3+2+n*(3+4n+5))
             if(len(categ[0])==a):
                 sug.append(categ[0][a-1])
             else:
                 sug.append(categ[0][a])
+            #4+5+9+5+2+(n+1)*((n+1)+3)+2+(n*(3+2+n*(3+4n+5)+3))
             while(len(categ[1])>b):
                 if(self.comprobarRes(categ[1][b],resActivas,res)==False):                
                     break
@@ -284,11 +297,17 @@ class Interfaz:
                 sug.append(categ[4][e-1])
             else:
                 sug.append(categ[4][e])
-                
+            #4+5+9+5+2+(n+1)*((n+1)+3)+2+(5*(n*(3+2+n*(3+4n+5)+3)))
+            #27+(n+1)(n+4)+(5*(n*(3+2+n*(8+4n)+3)))
+            #27+n^2+5n+4+(5*(n*(8+8n+4n^2)))
+            #31+n^2+5n+(5*(8n+8n^2+4n^3))
+            #31+n^2+5n+40n+40n^2+20n^3
+            #20n^3+41n^2+45n+31
             if(mostrar==True):
                 self.salida+="Sugerencia: "+str(sug)+"\n"
-                
+            #20n^3+41n^2+45n+37
             if(sug==sol):
+                #1
                 if(contra==True):
                     if(mostrar==True):
                         self.salida+="No hay solucion"+"\n"
@@ -298,7 +317,7 @@ class Interfaz:
                         self.salida+="Resultado: "+str(sug)+"\n"
                     return "exito"
             else:
-                eliminado=self.eliminar(categ,sug,sol,mostrar)
+                eliminado=self.eliminar(categ,sug,sol,mostrar)#15+3n
                 if(eliminado==0):
                     if(a>0):
                         a-=1
@@ -319,15 +338,17 @@ class Interfaz:
                     if(e>0):
                         e-=1
                     sug[eliminado]=categ[4][e]
+                #16+3n+8
                 if(sug==sol):
                     if(contra==True):
                         if(mostrar==True):
                             self.salida+="No hay solucion"+"\n"
-                            return "No hay solucion"
+                        return "No hay solucion"
                     else:
                         if(mostrar==True):
                             self.salida+="Resultado: "+str(sug)+"\n"
                         return "Exito"
+                #16+3n+8+9
                 elif(e<len(categ[4])-1):
                     e+=1
                 elif(d<len(categ[3])-1):
@@ -360,54 +381,66 @@ class Interfaz:
                     a=0
                 else:
                     return 'fracaso'
-            
+                #16+3n+8+9+25=3n+58
+                #20n^3+41n^2+45n+37+3n+58
+                #resultado=20n^3+41n^2+48n+95
 
 
     def comprobarSol(self, res, sol):
-        result1=False
-        result2=True
         for i in range(len(res)):
+            result=False
+            #(n+1)
             for j in range(len(res[i])):
+                #(n+1)*(n+1)
                 if res[i][j] in sol:
-                    result1=True
+                    result=True
                 else:
-                    result2=False
-            if result1==True and result2==True:
+                    result=False
+                    break
+                #1
+            if result==True:
                 return True
-        return False        
+            #(n+1)*1+3
+        return False
+        #2+(n+1)*((n+1)+3)+1
 
     def comprobarRes(self, elemento, resActivas, res):
         for i in range(len(res)):
+            #1+n
             if elemento in res[i]:
                 if i in resActivas:
                     resActivas.remove(i)
                     return True
                 else:
                     resActivas.append(i)
+             #1+n*(4)   
         return False
+        #1+n*(4)+1
 
     def eliminar(self, categ, sug, sol, mostrar):
         eliminar=0
         while(True):
+            #1+n*(2+1)
             eliminar=randrange(5)
             if not sug[eliminar] in sol:
                 break
         elemento=sug[eliminar]
-        #print('Eliminado: ',elemento)
+        #2+3n
         if(mostrar==True):
             self.salida+="Eliminado: "+str(elemento)+"\n"
+        #8+3n
         if eliminar==0:
             categ[0].remove(elemento)
-        if eliminar==1:
+        elif eliminar==1:
             categ[1].remove(elemento)
-        if eliminar==2:
+        elif eliminar==2:
             categ[2].remove(elemento)
-        if eliminar==3:
+        elif eliminar==3:
             categ[3].remove(elemento)
-        if eliminar==4:
+        else:
             categ[4].remove(elemento)
         return eliminar
-        
+        #14+3n
     def crearSol(self, c):
         global solution
         solution=[]
